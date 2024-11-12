@@ -1,0 +1,6 @@
+tensorflow
+librosa
+numpy
+flask
+flask-cors
+opencv-python
