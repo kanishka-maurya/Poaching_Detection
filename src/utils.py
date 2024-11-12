@@ -14,6 +14,10 @@ classes = ['Axe', 'BirdChirping', 'Chainsaw', 'Clapping', 'Fire', 'Firework', 'F
            'Speaking', 'Squirrel', 'Thunderstorm', 'TreeFalling', 'VehicleEngine', 'WaterDrops', 
            'Whistling', 'Wind', 'WingFlaping', 'WolfHowl', 'WoodChop']
 
+def normalise(image,label):
+    image = tf.cast(image/255. , tf.float32)
+    return image,label
+
 def predict(filepath, output_path):
     try:
         # Load audio file and generate spectrogram
@@ -30,13 +34,21 @@ def predict(filepath, output_path):
         plt.close()
 
         # Preprocess the image
+        # image = tf.keras.utils.image_dataset_from_directory(
+        #     directory="output_path",
+        #     labels="none",
+        #     batch_size=1,
+        #     image_size=(256,256)
+        # )
+
+        # input_data = image.map(normalise)
         image = cv2.imread(output_path)
         image = cv2.resize(image, (256, 256))
-        input_data = image.reshape((1, 256, 256, 3)).astype('float32') / 255.0
+        input_data = image.reshape((1, 256, 256, 3)) / 255
 
         # Make prediction
         prediction = model.predict(input_data)
-        predicted_class = classes[int(np.argmax(prediction))]
+        predicted_class = classes[np.argmax(prediction)]
         
         return predicted_class
     
