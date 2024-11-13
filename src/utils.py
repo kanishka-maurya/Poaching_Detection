@@ -8,7 +8,7 @@ import cv2
 import tensorflow as tf
 
 # Load the model and classes outside of the function for efficiency
-model = tf.keras.models.load_model(os.path.join(os.path.dirname(os.path.dirname(__file__)), "models/Audio.h5"))
+model = tf.keras.models.load_model(os.path.join(os.path.dirname(os.path.dirname(__file__)), "models/Audio_new.h5"))
 classes = ['Axe', 'BirdChirping', 'Chainsaw', 'Clapping', 'Fire', 'Firework', 'Footsteps', 'Frog', 
            'Generator', 'Gunshot', 'Handsaw', 'Helicopter', 'Insect', 'Lion', 'Rain', 'Silence', 
            'Speaking', 'Squirrel', 'Thunderstorm', 'TreeFalling', 'VehicleEngine', 'WaterDrops', 
@@ -43,7 +43,7 @@ def predict(filepath, output_path):
 
         # input_data = image.map(normalise)
         image = cv2.imread(output_path)
-        image = cv2.resize(image, (256, 256))
+        image = cv2.resize(image, (256, 256), interpolation = cv2.INTER_AREA)
         input_data = image.reshape((1, 256, 256, 3)) / 255
 
         # Make prediction
