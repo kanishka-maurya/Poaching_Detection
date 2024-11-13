@@ -8,11 +8,15 @@ import cv2
 import tensorflow as tf
 
 # Load the model and classes outside of the function for efficiency
-model = tf.keras.models.load_model(os.path.join(os.path.dirname(os.path.dirname(__file__)), "models/Audio.h5"))
+model = tf.keras.models.load_model(os.path.join(os.path.dirname(os.path.dirname(__file__)), "models/Audio_new.h5"))
 classes = ['Axe', 'BirdChirping', 'Chainsaw', 'Clapping', 'Fire', 'Firework', 'Footsteps', 'Frog', 
            'Generator', 'Gunshot', 'Handsaw', 'Helicopter', 'Insect', 'Lion', 'Rain', 'Silence', 
            'Speaking', 'Squirrel', 'Thunderstorm', 'TreeFalling', 'VehicleEngine', 'WaterDrops', 
            'Whistling', 'Wind', 'WingFlaping', 'WolfHowl', 'WoodChop']
+
+def normalise(image,label):
+    image = tf.cast(image/255. , tf.float32)
+    return image,label
 
 def predict(filepath, output_path):
     try:
@@ -30,13 +34,21 @@ def predict(filepath, output_path):
         plt.close()
 
         # Preprocess the image
+        # image = tf.keras.utils.image_dataset_from_directory(
+        #     directory="output_path",
+        #     labels="none",
+        #     batch_size=1,
+        #     image_size=(256,256)
+        # )
+
+        # input_data = image.map(normalise)
         image = cv2.imread(output_path)
-        image = cv2.resize(image, (256, 256))
-        input_data = image.reshape((1, 256, 256, 3)).astype('float32') / 255.0
+        image = cv2.resize(image, (256, 256), interpolation = cv2.INTER_AREA)
+        input_data = image.reshape((1, 256, 256, 3)) / 255
 
         # Make prediction
         prediction = model.predict(input_data)
-        predicted_class = classes[int(np.argmax(prediction))]
+        predicted_class = classes[np.argmax(prediction)]
         
         return predicted_class
     

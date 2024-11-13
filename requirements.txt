@@ -4,3 +4,9 @@ numpy
 flask
 flask-cors
 opencv-python
+keras
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
